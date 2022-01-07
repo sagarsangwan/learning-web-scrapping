@@ -6,7 +6,8 @@ import mysql.connector
 mydb = mysql.connector.connect(
     host = 'localhost',
     user = 'root',
-    password = "admin"
+    password = "admin",
+    database = "users"
 )
 
 req = requests.get("https://brpaper.com/mdu/b-tech/cse/3")
@@ -28,13 +29,16 @@ for d in desc:
 for q in desc:
     q_links.append(q["href"])
 info = []
-# info(subject_name, subject_desc)
-# info = [x + y for x, y in zip(subject_name, subject_name)]
- 
+for i in range(0, len(subject_name)):
+    info.append([subject_name[i], subject_desc[i]])
 
 print(info)
 
 
-# for i in range(0, len(subject_name)):
-#     cur = mysql.connection.cursor()
-#     cur.execute("INSERT INTO subjects(subject_name, subject_desc), values(%s, %s), (subject_name[1], )")
+# for n in info:
+#     cur = mydb.cursor()
+#     cur.execute("INSERT INTO subjects(subject_name, subject_desc) values(%s, %s)",(n[0], n[1]))
+    
+
+# mydb.commit()
+# cur.close
