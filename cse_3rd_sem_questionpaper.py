@@ -50,12 +50,28 @@ print("before===============")
 def upload_to_mysql(info):
     for n in info:
         cur = mydb.cursor()
-        cur.execute(
-            "INSERT INTO temp(name, sub_desc) values(%s, %s)", (str((n.get("name"))), str(n.get("year"))))
-
+        cur.execute("INSERT INTO question_paper(qp_name, link, year) values(%s, %s, %s)", (str((n.get("name"))), str(n.get("link")), str(n.get("year"))))
+        cur.execute("SELECT LAST_INSERT_ID();")
+        id =cur.fetchone()[0]
+        cur.execute("INSERT INTO subjects(subject_name, subject_desc, question_papers) values(%s, %s, %s)", (str((n.get("name"))),str((n.get("desc"))), str(id)))
+        
     mydb.commit()
     cur.close()
     return"done"
+
+def upload(info):
+    for n in info:
+        cur = mydb.cursor()
+        cur.execute("SELECT * FROM temp")
+        data = cur.fetchall()
+        if n in data:
+            pass
+        else:
+            cur.execute("INSERT INTO temp(name, sub_desc) values(%s, %s)", (str((n.get("name"))), str(n.get("year"))))
+    cur.close()
+    return"done"
+
+# upload()
 
 upload_to_mysql(final_links(get_all_subject_link()))
 print("after=================================")
