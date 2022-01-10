@@ -55,7 +55,7 @@ def upload_to_mysql(info):
         data = list(map(lambda x: x[0], cur.fetchall()))
 
         if n.get("name") in data:
-            print("skipped-", n)
+            print("skipped-", n.get("name"))
         else:
             cur.execute("INSERT INTO question_paper(qp_name, link, year) values(%s, %s, %s)", (str((n.get("name"))), str(n.get("link")), str(n.get("year"))))
             cur.execute("SELECT LAST_INSERT_ID();")
@@ -65,15 +65,19 @@ def upload_to_mysql(info):
             sub_id =cur.fetchone()[0]
             subject_ids.append(str(sub_id))
             cur.execute("INSERT INTO subjects_to_course(subject_id, course_ids) values(%s, %s)",(str(sub_id), "1"))
-            print("inserted-", n)
+            print("inserted-", n.get("name"))
 
-    print("-------------", ",".join(subject_ids))
-    cur.execute("UPDATE course_to_subjets SET subjects_ids = subjects_ids+ %s WHERE course_id = %s", (",".join(subject_ids), "1"))
+    if len(subject_ids) > 0: 
+        cur.execute("INSERT INTO course_to_subjets(subjects_ids, course_id) VALUES (%s, %s) ON DUPLICATE KEY UPDATE subjects_ids=subjects_ids+%s", (",".join(subject_ids), "1", ",".join(subject_ids)))
+
+    # cur.execute("UPDATE course_to_subjets SET subjects_ids = subjects_ids+ %s WHERE course_id = %s", (",".join(subject_ids), "1"))
+    mydb.commit()
     cur.close()
     return"done"
 
 # cur = mydb.cursor()
-# cur.execute("SELECT * FROM temp")
+# cur.execute("INSERT INTO course_to_subjets ")
+# cur.execute("SELECT * FROM course_to_subjets")
 # data = cur.fetchall()
 # print(data)
 # cur.close()
