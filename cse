@@ -1,0 +1,34 @@
+import requests
+import os
+from bs4 import BeautifulSoup
+import mysql.connector
+from dotenv import load_dotenv
+
+print("before===============")
+
+name = []
+year = []
+links = []
+
+req = requests.get("https://brpaper.com/mdu/b-tech/cse/1-2/be")
+soup = BeautifulSoup(req.content, "html.parser")
+item_card = soup.findAll("a", {"class": "br-thumb"})
+a = 0
+for i in item_card:
+    name = (i.select(".br-thumb h6.color-dark span")).string
+    # year = i.select(".overlay strong.text-white")[0].string
+    # link = i["href"]
+    # dic = {
+    #     "year": year,
+    #     "link": link,
+    # }
+    # data.append(dic)
+    print(a+1)
+    print(name)
+
+
+       
+
+
+
+print("after=================================")
